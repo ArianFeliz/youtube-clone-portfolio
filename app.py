@@ -48,8 +48,6 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        from seed_data import seed_if_empty
-        seed_if_empty()
 
     return app
 
