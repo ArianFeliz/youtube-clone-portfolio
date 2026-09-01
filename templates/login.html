@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Entrar — Signal{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <h1>Entrar</h1>
+  <p class="form-hint">Usa la cuenta demo: <strong>demo</strong> / <strong>demo1234</strong></p>
+  <form method="post">
+    <div class="field">
+      <label for="identifier">Usuario o correo</label>
+      <input type="text" id="identifier" name="identifier" required autofocus>
+    </div>
+    <div class="field">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-solid">Entrar</button>
+  </form>
+  <p class="form-footer">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate</a></p>
+</div>
+{% endblock %}

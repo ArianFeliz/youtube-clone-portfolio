@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}{{ video.title }} — Signal{% endblock %}
+
+{% block content %}
+<div class="watch-layout">
+  <div>
+    <div class="player-wrap">
+      <video src="{{ video.video_url }}" controls autoplay></video>
+    </div>
+
+    <h1 class="watch-title">{{ video.title }}</h1>
+
+    <div class="watch-bar">
+      <div class="card-meta">{{ video.uploader.username }} · {{ video.views }} vistas · {{ video.created_at|timesince }}</div>
+
+      <div style="display:flex; gap:10px;">
+        {% if current_user.is_authenticated %}
+          <form action="{{ url_for('main.toggle_like', video_id=video.id) }}" method="post">
+            <button type="submit" class="btn like-btn {% if video.liked_by(current_user) %}liked{% endif %}">
+              {% if video.liked_by(current_user) %}★{% else %}☆{% endif %} {{ video.like_count }}
+            </button>
+          </form>
+          {% if current_user.id == video.uploader_id %}
+            <form action="{{ url_for('main.delete_video', video_id=video.id) }}" method="post"
+                  onsubmit="return confirm('¿Eliminar este video?');">
+              <button type="submit" class="btn">Eliminar</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn like-btn">☆ {{ video.like_count }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if video.description %}
+      <div class="description-box">{{ video.description }}</div>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.id == video.uploader_id %}
+      <form class="thumbnail-editor" action="{{ url_for('main.update_thumbnail', video_id=video.id) }}" method="post" enctype="multipart/form-data">
+        <span>Miniatura:</span>
+        <input type="file" name="thumbnail" accept="image/*" required>
+        <button type="submit" class="btn">Actualizar</button>
+      </form>
+    {% endif %}
+
+    <p class="section-label">{{ comments|length }} comentarios</p>
+
+    {% if current_user.is_authenticated %}
+      <form class="comment-form" action="{{ url_for('main.add_comment', video_id=video.id) }}" method="post">
+        <input type="text" name="text" placeholder="Añade un comentario..." required maxlength="1000">
+        <button type="submit" class="btn btn-solid">Publicar</button>
+      </form>
+    {% endif %}
+
+    {% for comment in comments %}
+      <div class="comment">
+        {{ macros.avatar(comment.author, size=32) }}
+        <div class="comment-body">
+          <span class="comment-author">{{ comment.author.username }}</span>
+          <span class="comment-time">{{ comment.created_at|timesince }}</span>
+          <div class="comment-text">{{ comment.text }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div>
+    <p class="section-label">Siguiente</p>
+    {% for s in suggestions %}
+      <a class="suggestion-item" href="{{ url_for('main.watch', video_id=s.id) }}">
+        <div class="thumb">
+          {% if s.thumbnail_url %}
+            <img src="{{ s.thumbnail_url }}" alt="{{ s.title }}">
+          {% else %}
+            <div class="thumb-fill" style="--thumb-gradient: linear-gradient(145deg, {{ s.thumb_colors[0] }}, {{ s.thumb_colors[1] }});"></div>
+            <span class="thumb-glyph">{{ s.title[0]|upper }}</span>
+          {% endif %}
+        </div>
+        <div>
+          <div class="card-title">{{ s.title }}</div>
+          <div class="card-meta">{{ s.uploader.username }} · {{ s.views }} vistas</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

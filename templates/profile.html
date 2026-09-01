@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}Tu perfil — Signal{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <h1>Tu perfil</h1>
+
+  <div style="display:flex; align-items:center; gap:14px; margin-bottom:22px;">
+    {{ macros.avatar(current_user, size=56) }}
+    <div class="card-meta">Miembro desde {{ current_user.created_at|timesince }}</div>
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="username">Nombre de usuario</label>
+      <input type="text" id="username" name="username" value="{{ current_user.username }}" required>
+    </div>
+    <div class="field">
+      <label for="avatar">Foto de perfil</label>
+      <input type="file" id="avatar" name="avatar" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-solid">Guardar cambios</button>
+  </form>
+</div>
+{% endblock %}

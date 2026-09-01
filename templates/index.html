@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Signal — Inicio{% endblock %}
+
+{% block content %}
+  {% if query %}
+    <p class="section-label">Resultados para "{{ query }}"</p>
+  {% endif %}
+
+  {% if videos %}
+    <div class="grid">
+      {% for video in videos %}
+        <a class="card" href="{{ url_for('main.watch', video_id=video.id) }}">
+          <div class="thumb">
+            {% if video.thumbnail_url %}
+              <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}">
+            {% else %}
+              <div class="thumb-fill" style="--thumb-gradient: linear-gradient(145deg, {{ video.thumb_colors[0] }}, {{ video.thumb_colors[1] }});"></div>
+              <span class="thumb-glyph">{{ video.title[0]|upper }}</span>
+            {% endif %}
+          </div>
+          <div class="card-title">{{ video.title }}</div>
+          <div class="card-meta">{{ video.uploader.username }} · {{ video.views }} vistas · {{ video.created_at|timesince }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      {% if query %}
+        No hay videos que coincidan con "{{ query }}".
+      {% else %}
+        Todavía no hay señal. Sé el primero en subir un video.
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

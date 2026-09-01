@@ -1,0 +1,58 @@
+{% import "_macros.html" as macros %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Signal{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('main.index') }}" class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24">
+        <rect class="bar" x="2" y="8" width="4" height="8" rx="1"/>
+        <rect class="bar" x="10" y="4" width="4" height="16" rx="1"/>
+        <rect class="bar" x="18" y="10" width="4" height="6" rx="1"/>
+      </svg>
+      Signal
+    </a>
+
+    <form class="search-form" action="{{ url_for('main.index') }}" method="get">
+      <input type="text" name="q" placeholder="Buscar videos..." value="{{ request.args.get('q', '') }}">
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div class="nav-actions">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.upload') }}" class="btn btn-solid">Subir</a>
+        <a href="{{ url_for('auth.profile') }}" class="user-chip">
+          {{ macros.avatar(current_user) }}
+          {{ current_user.username }}
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="btn">Salir</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn">Entrar</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-solid">Crear cuenta</a>
+      {% endif %}
+    </div>
+  </nav>
+  <div class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flashes">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

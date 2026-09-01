@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Subir video — Signal{% endblock %}
+
+{% block content %}
+<div class="form-page wide">
+  <h1>Subir video</h1>
+  <form method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" required autofocus maxlength="200" placeholder="¿Cómo se llama tu video?">
+    </div>
+    <div class="field">
+      <label for="description">Descripción</label>
+      <textarea id="description" name="description" rows="4" maxlength="2000" placeholder="Cuenta de qué trata (opcional)"></textarea>
+    </div>
+    <div class="field">
+      <label for="video_file">Archivo de video</label>
+      <input type="file" id="video_file" name="video_file" accept="video/*">
+      <p class="field-or">Formatos aceptados: mp4, webm, mov, ogg. O, si prefieres, pega un enlace directo abajo en vez de subir un archivo.</p>
+    </div>
+    <div class="field">
+      <label for="external_url">Enlace directo al video</label>
+      <input type="url" id="external_url" name="external_url" placeholder="https://ejemplo.com/mi-video.mp4">
+    </div>
+    <div class="field">
+      <label for="thumbnail">Miniatura (opcional)</label>
+      <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+      <p class="field-or">Si no subes una, se genera una automática con la inicial del título.</p>
+    </div>
+    <button type="submit" class="btn btn-solid">Publicar video</button>
+  </form>
+</div>
+{% endblock %}
